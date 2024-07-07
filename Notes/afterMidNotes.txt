@@ -1,0 +1,337 @@
+
+
+for(int& val : v2){
+    val *= 10;
+}
+for (Iterator iter = v2.begin(); iter != v2.end();++iter){
+    int& val = *iter;
+    val *= 10;
+    }
+
+// printvector
+void printVector (const Vector& v){
+    for (int val : v){
+        cout<<val<<' ';
+    }
+    cout << endl;
+    for (int& val :v){ // We have to have an other class coz Iterator class is not the one for this
+        ++val;
+    }  
+}
+
+class Vector{
+    class Iterator{
+    friend bool operator != (const Iterator& lhs, const Iterator& rhs){
+        return lhs.where != rhs.where;
+    }
+    public:
+        Iterator(int* where) :where(where){}
+
+        // op++
+        Iterator& operator++{
+            ++where;
+            return *this;
+        }
+
+        //op*
+        int operator*() {         
+            return *where;
+        }
+    private:
+        int* where;                   
+    };
+};
+for (Vector::Iterator iter = v2.begin(); iter != v2.end();++iter){ //Qualify it
+    int& val = *iter;
+    val *= 10;
+    }
+
+
+// The class should be const_iterator
+class Const_Iterator{
+    friend bool operator != (const Const_Iterator& lhs, const Const_Iterator& rhs){
+        return lhs.where != rhs.where;
+    }
+    public:
+        Const_Iterator(int* where) :where(where){}
+
+        // op++
+        Const_Iterator& operator++{
+            ++where;
+            return *this;
+        }
+
+        //op*
+        int operator*() const {         // Dereference operator should also be const
+            return *where;
+        }
+    private:
+        //int* where;                   // This thing should be made const which makes it pair with the dereference operator as well
+        const int* where;
+};
+
+
+// Const_Iterator
+Const_Iterator begin () {return Const_Iterator(data);} 
+Const_Iterator end () {return Const_Iterator(data+theSize);}
+
+// Iterator
+Iterator begin () {return Iterator(data);} 
+Iterator end () {return Iterator(data+theSize);}
+
+// const Iterators
+const Iterator begin () {return Iterator(data);} 
+const Iterator end () {return Iterator(data+theSize);}
+
+// const Iterators const
+const Iterator begin () const {return Iterator(data);} 
+const Iterator end () const {return Iterator(data+theSize);}
+
+// Just a Vector original class can only hold ints so we will have to define a whole new class for doubles and other stuff
+// We can use the STL vector class which already has all the functionality
+// C++ aloows us to automatically create a whole new class that can hold ints, doubles, complex numbers with no effort from out part
+// The technique is known as a template. Like a cookie guide, it allows us to bake the same class with different ingredients
+
+
+class Vector {
+    public:
+        explicit Vector(size_t howMany = 0; int val = 0){
+            theSize = howMany;
+            theCapacity = howMany;
+            data = new int[howMany];
+            for (size_t i =0; i < theSize; i++){
+                data[i]= val;
+            }
+        }
+        ~Vector(){
+            delete[] data;
+        }
+
+        // Copy Constructor
+        Vector(const Vector& rhs)
+        // Assignment Operator
+    private:
+        int* data;
+        size_t theSize;
+        size_t theCapacity;
+}
+
+// template: We change every ints to T that were inappropriate
+// If type T has no output operator it would hsow a very weird compilation error
+
+
+Standard template libarary
+sort(arr, arr+len) 1) what are you passing?, 2) Start and the stop [Start,Stop)
+Sort function template has atleast two parameter and those two parameters have the same type name
+
+// STL contains collection (vector,list). Unordered and ordered sets. SOe are linear and some are not (sets,maps)
+// Algorithm: sort()
+
+char* myFind(char* start, char* stop, char target){
+    for (char* p = start; p != stop; ++p){
+        if (*p == target) retrun p;
+    }
+    return stop;
+}
+
+// As a template it should be return as....PLEASE REMEMBER
+
+template <typename T,typename U>
+T myFind(T start, T stop, U target){
+    for (T p = start; p != stop; ++p){
+        if (*p == target) retrun p;
+    }
+    return stop;
+}
+
+
+bool isEven(int val) {rteurn val%2 ==0;}
+
+int main(){
+    
+    char arr[] = "Bjarne Stroustrup";   // This is a local array and the compiler knows the size
+    int len = 17; // Intialisation
+    sort(arr,arr+len); //Passing a pointer to the first element in the array. arr refers to the adress and it is the name
+    list<char> lc(arr,arr+len);
+    vector<char> vc(lc.begin(),lc.end());
+
+    // list::iterator where = find(lc.begin(), lc.end(), 'S') WILL NOT COMPILE as it is a template
+
+
+    list<char>::iterator where = find(lc.begin(), lc.end(), 'S') WILL COMPILE as the type is specified
+
+    where = find(lc.begin(),lc.end(),'Q);
+
+    // Says where to look and returns an iterator // make the iterator class nested for the list class
+    // find points to the end iterator if the charcater does not exist.
+
+    myFind(arr, arr+len, 'j');
+    char* where2 = myFind(arr, arr+len, 'j');
+    vector<int> vi{3,5,7,11,8,13};
+    vector<int>::iterator where3 = find_if(vi.begin(),vi.end(),isEven)
+
+    where3 = myfind_if(vi.begin(),vi.end(), // Lambda expression or function (does not have a return type)
+                [](int val){return val%2==0;});
+
+
+
+}
+
+//Vector iterator is a constant time operation and list is not
+// List iterator does not support the pointer arithmetic style
+// sort wont work with list operator then what should they do?
+// list operation is implemente dusing a merge list
+
+
+April 29th Monday
+Recursion
+
+// listDup
+Node* listDup(const Node* p){    
+    if (p == nullptr) return nullptr;   // Empty List
+    return new Node{p->data, listDup(p-> next)};
+} // There is spacecomplexity which is linear space complexity as we are just creating nodes
+
+// listPrint - takes linear space stored on a stack. Loop would take constant space but this is linear as it is stored on callstack
+// While writing recursive functions, start with recursive call, figure out what is passing in and think of what does it do. Think of what else you will have to do
+// Do not forget base or test cases
+void listPrint(const Nose* p){
+    if(p== nullptr){
+        cout<<endl;
+    }
+    else{
+        cout << p-> data<< " "<<listPrint(p -> next);
+    }
+}
+
+// Towers of hanoi.. print out the sequence of moves
+void towers(int n, char start, char target, char spare){
+    if (n == 0){
+        cout << " "<< endl;
+    }
+    // else if (n == 1){
+    //    cout << "Move disk: "<< n << " from " << start << " to "<< target << endl;
+    // }
+    else{
+        towers(n-1, start, spare, target); // We are moving n-1 disks from a to b and the larget one to c the target. Now A is empty
+        cout <<"Move disk: "<< n << " from " << start << " to "<< target << endl;
+        towers(n-1, spare, target, start);
+    }
+}
+
+
+int main(){
+    // towers(64, 'A', 'C', 'B');
+    towers(3, 'A', 'C', 'B');
+}
+
+// Bits
+
+void printDigits(int n){
+    // What if there is only one digit?
+    if (n < 10){
+        cout << n << endl;
+    }
+    else{
+    printDigits(n/10);
+    cout<< n % 10<< ' ';
+    }
+}
+void printDigitsReserve(int n){}
+
+void printBits (int n){}
+
+int countBits(int n){ // Function to return the count of the bits. This function should not print
+    if (n <2){
+        return n;
+    }
+    else{
+        int count = countBits(n/2); // If it is returning, please capture it
+        count += n%2;
+        return count; 
+        // Instead of the three lines above we can us the one line below to show everything
+        return (n%2)+ countBits(n/2);
+    }
+}
+
+int main(){
+    cout << "PrintDigits(314159)";
+    printDigits(31459);  // Provide a recursive solution in exam.. Please do not write loop or an implied loop.. write recursion
+    cout<<endl;
+    cout <<"reverse print"<<endl;
+    printDigitsReverse(314159);
+    cout<< endl;
+    cout << "Print bits"<< endl;
+    printBits(5);
+    cout<<endl;
+}
+
+// Trees
+struct TNode{
+    int data =0;
+    TNode* left = nullptr;
+    TNode* right = nullptr;
+};
+
+// Do not pass nullptr on an empty tree
+int treeSum(const TNode* root){
+    if (root == nullptr){
+        return 0;
+    }
+    else{
+        treeSum(root -> left) + treeSum(root -> right) + root->data;
+    }
+}
+
+int main(){
+    vector<int> v;
+    v[17] = 42; 
+    // This is a runtime error since the compiler does not know the integres in the vector.
+}
+// When run, this gives a segmentation fault, we tried to access an element using pointer arithmetic on a NULLPTR
+
+int main(){
+    vector<int> v;
+    v.push_back(6); // Now we are just as much out of bounds but our object v has size 1 and maybe capacity 1 and  data pointer pointing to any array with one element
+    // The pointer arithmetic says oh you are going to access the element up theeeeerrrreee.. (17)
+    v[17] = 42; 
+    cout<<v[17]<<endl; // This prints 42
+    // We get no indication when something is error. Index out of bound is not caught. // this is UNDEFINED BEHAVIOUR
+}
+
+// WHAT IS WELL DEFINED THEN?
+int main(){
+    vector<int> v;
+    v.push_back(6);
+    v.at(17) = 42;
+    v[17] = 42 // Bound checking in [] operator slows the program but there is a method
+    cout << v.at(17) << endl; 
+    // We know size is 1 so it gives an exception..abort trap.
+} 
+
+c string: an array of chars with a nullptr in the end
+
+
+// Polymorphism is enable only when it is a Base pointer or a Base reference. else leads to slicing.
+class Base{
+    public:
+        virtual void foo() {cout<< "Base::foo\n";}
+    private:
+};
+
+class Derived:public Base{
+    public:
+        virtual void foo(){cout<<"Derived::foo\n";}
+    private:
+};
+
+void func2(Base& baseRef){
+    cout<< "In fun2";
+    derivedRef.foo();
+}
+
+void func(Base* bp){
+    func2(*bp);
+}
+
+int main()
